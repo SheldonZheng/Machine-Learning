@@ -23,6 +23,25 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+C_vec = [0.01 0.03 0.1 0.3 1 3 10];
+sigma_vec = [0.01 0.03 0.1 0.3 1 3 10];
+
+result = [];
+minimum = [0 0 0];
+
+for c =1 : length(C_vec)
+    for s = 1: length(sigma_vec)
+        model = svmTrain(X,y,C_vec(c),@(x1,x2) gaussianKernel(x1,x2,sigma_vec(s)));
+        predictions = svmPredict(model,Xval);
+        result = [result; mean(double(predictions ~= yval)) C_vec(c) sigma_vec(s)];
+    end
+end
+
+sortedResult = sortrows(result);
+
+minimum = sortedResult(1,:);
+C = minimum(2);
+sigma = minimum(3);
 
 
 
