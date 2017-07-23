@@ -44,8 +44,19 @@ Theta_grad = zeros(size(Theta));
 J = sum(sum((((X*Theta') .* R)-(Y .* R)) .^ 2)) * 1/2;
 
 
+for i = 1:num_movies
+    idx = find(R(i,:) == 1);
+    Theta_tmp = Theta(idx,:);
+    Y_tmp = Y(i,idx);
+    X_grad(i,:) = (X(i,:) * Theta_tmp' - Y_tmp) * Theta_tmp  + lambda * X(i,:);
+end
 
-
+for i = 1:num_users
+    idx = find(R(:,i) == 1)';
+    X_tmp = X(idx,:);
+    Y_tmp = Y(idx,i);
+    Theta_grad(i,:) = ((X_tmp * Theta(i,:)' - Y_tmp)' * X_tmp) + lambda * Theta(i,:);
+end
 
 
 
